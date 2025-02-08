@@ -1,51 +1,15 @@
-// // Sample Go code for user authorization
-
-// package main
-
-// import (
-// 	"context"
-// 	"encoding/json"
-// 	"fmt"
-
-// 	// "golang.org/x/oauth2"
-// 	// "google.golang.org/api/config/v1"
-// 	"google.golang.org/api/option"
-// 	"google.golang.org/api/youtube/v3"
-// )
-
-// func main() {
-// 	ctx := context.Background()
-
-// 	service, err := youtube.NewService(ctx, option.WithAPIKey("AIzaSyDOcTfdT1Z6QWrp8qqDjRl_c1sTabpfaiw"))
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	call, err := service.Search.List([]string{"snippet"}).
-// 		Q("cats").
-// 		MaxResults(25).
-// 		Order("date").
-// 		Type("video").
-// 		Do()
-
-// 	for _, item := range call.Items {
-// 		jsonData, err := json.Marshal(item.Snippet)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		fmt.Println(string(jsonData))
-// 	}
-// }
-
 package main
 
 import (
 	"io"
 	"log"
 	"os"
-	// "time"
+	"time"
 
-	// "github.com/TheAlpha16/typi/api/database"
+	"github.com/TheAlpha16/typi/api/config"
+	"github.com/TheAlpha16/typi/api/database"
+	"github.com/TheAlpha16/typi/api/fetcher"
+	"github.com/TheAlpha16/typi/api/keyrings"
 	"github.com/TheAlpha16/typi/api/logs"
 	"github.com/TheAlpha16/typi/api/router"
 
@@ -56,16 +20,24 @@ import (
 
 func main() {
 	logs.InitLogger()
+	keyrings.InitKeys()
+	_ = fetcher.GetYTClient()
 
-	// for {
-	// 	if err := database.Connect(); err != nil {
-	// 		log.Println(err)
-	// 		log.Println("sleep for 1 minute")
-	// 		time.Sleep(time.Minute)
-	// 		continue
-	// 	}
-	// 	break
-	// }
+	for {
+		if err := database.Connect(); err != nil {
+			log.Println(err)
+			log.Println("sleep for 1 minute")
+			time.Sleep(time.Minute)
+			continue
+		}
+		break
+	}
+
+	last_fetch, err := database.GetLastFetch()
+	if err != nil {
+		log.Fatal(err)
+	}
+	config.LAST_FETCH = last_fetch
 
 	// Setup access logs
 	accessLogFile, err := os.OpenFile("./access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -82,6 +54,17 @@ func main() {
 	app.Use(logger.New(loggerConfig))
 	app.Use(recover.New())
 	router.SetupRoutes(app)
+
+	// call fetch every 5 minutes
+	go func() {
+		for {
+			log.Println("fetching new videos...")
+			if err := fetcher.FetchVideosAsync(); err != nil {
+				log.Println(err)
+			}
+			time.Sleep(5 * time.Minute)
+		}
+	}()
 
 	log.Fatal(app.Listen(":4601"))
 }
