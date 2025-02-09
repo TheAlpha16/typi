@@ -27,7 +27,7 @@ func FetchVideosAsync() error {
 			logrus.Warn("Quota exceeded, switching API key...")
 			client = nil
 			client = GetYTClient()
-			return FetchVideosAsync()
+			return nil
 		}
 		logrus.WithError(err).Error("failed to fetch videos")
 		return err
