@@ -42,7 +42,7 @@ func FetchVideosAsync() error {
 			Title:       item.Snippet.Title,
 			Description: item.Snippet.Description,
 			PublishedAt: item.Snippet.PublishedAt,
-			Thumbnail:   item.Snippet.Thumbnails.Default.Url,
+			Thumbnail:   item.Snippet.Thumbnails.High.Url,
 		}
 
 		videos = append(videos, video)
