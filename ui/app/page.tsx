@@ -59,6 +59,9 @@ export default function Home() {
           </h1>
           <ThemeToggle />
         </div>
+        <span className="flex text-gray-600 dark:text-gray-400 mb-6">
+          Typi fetches videos from the API in paginated responses, enabling lazy loading and infinite scrolling for a seamless browsing experience.
+        </span>
         <div className="mb-6 flex flex-col sm:flex-row gap-4">
           <form
             onSubmit={(e) => e.preventDefault()}
@@ -66,10 +69,10 @@ export default function Home() {
           >
             <Input
               type="text"
-              placeholder="Search videos..."
+              placeholder="filter videos with keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-grow"
+              className="flex-grow truncate"
             />
             <Button type="submit">
               <Search size={"icon"} />
