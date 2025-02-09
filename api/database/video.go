@@ -1,16 +1,16 @@
 package database
 
 import (
-	"log"
-
 	"github.com/TheAlpha16/typi/api/models"
+
+	"github.com/sirupsen/logrus"
 )
 
 func GetVideoCount() (int64, error) {
 	var count int64
 
 	if err := DB.Model(&models.Video{}).Count(&count).Error; err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("unable to get video count")
 		return 0, err
 	}
 
@@ -26,7 +26,7 @@ func GetVideos(offset, limit int) ([]models.Video, error) {
 		Offset(offset).
 		Limit(limit).
 		Find(&videos).Error; err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("unable to get videos")
 		return nil, err
 	}
 

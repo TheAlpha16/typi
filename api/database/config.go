@@ -1,9 +1,9 @@
 package database
 
 import (
-	"log"
-
 	"github.com/TheAlpha16/typi/api/models"
+
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm/clause"
 )
 
@@ -14,7 +14,7 @@ func GetConfig(key string) (string, error) {
 		Model(&models.Config{}).
 		Where("key = ?", key).
 		First(&config).Error; err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("unable to read config")
 		return "", err
 	}
 
@@ -32,7 +32,7 @@ func SetConfig(key, value string) error {
 		DoUpdates: clause.AssignmentColumns([]string{"value"}),
 	}).
 		Create(&config).Error; err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("unable to set config")
 		return err
 	}
 

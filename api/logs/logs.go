@@ -1,18 +1,27 @@
 package logs
 
 import (
-	"io"
-	"log"
-	"os"
+	"time"
+
+	"github.com/sirupsen/logrus"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var errorLogFile *os.File
-
 func InitLogger() {
-	errorLogFile, _ = os.OpenFile("./error.log", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
+	logrus.SetLevel(logrus.InfoLevel)
 
-	iw := io.MultiWriter(os.Stdout, errorLogFile)
+	fileFormatter := &logrus.JSONFormatter{
+		TimestampFormat: time.RFC3339,
+	}
 
-	log.SetOutput(iw)
-	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	logFile := &lumberjack.Logger{
+		Filename:   "api.log",
+		MaxSize:    10,
+		MaxBackups: 3,
+		MaxAge:     7,
+		Compress:   true,
+	}
+
+	logrus.SetOutput(logFile)
+	logrus.SetFormatter(fileFormatter)
 }
