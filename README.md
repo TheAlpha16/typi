@@ -30,7 +30,7 @@ Clone the repository
 
 ```bash
 git clone https://github.com/TheAlpha16/typi.git
-cd yourproject
+cd typi
 ```
 
 You can use docker compose to deploy the application. 
