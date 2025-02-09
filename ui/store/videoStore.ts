@@ -10,13 +10,13 @@ interface Video {
 }
 
 interface VideoState {
-    videos: { [page: number]: Video[] };
-    currentPage: number;
-    totalPages: number;
-    isLoading: boolean;
-    searchQuery: string;
-    filteredVideos: Video[];
-    fetchVideos: (page: number, perPage: number) => Promise<void>;
+    videos: { [page: number]: Video[] }; // cached videos
+    currentPage: number; // current page number
+    totalPages: number; // total number of pages
+    isLoading: boolean; 
+    searchQuery: string; // keyword to search videos
+    filteredVideos: Video[]; // videos to be shown on the UI
+    fetchVideos: (page: number, perPage: number) => Promise<void>; // fetch videos from the API
     setSearchQuery: (query: string) => void;
 }
 

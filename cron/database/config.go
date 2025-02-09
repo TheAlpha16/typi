@@ -43,6 +43,14 @@ func SetConfig(key, value string) error {
 	return nil
 }
 
+/* 
+UpdateLastFetch updates the "last_fetch" key in the Config table with the current timestamp
+formatted in RFC3339 format. If the update fails, it logs the error and returns it.
+
+Returns:
+	- error: An error object if the update operation fails, otherwise nil.
+*/
+
 func UpdateLastFetch() error {
 	if err := DB.
 		Model(&models.Config{}).
@@ -54,6 +62,18 @@ func UpdateLastFetch() error {
 
 	return nil
 }
+
+/*
+GetLastFetch retrieves the last fetch time from the configuration.
+If the configuration entry "last_fetch" is not found, it sets the current
+time as the last fetch time and returns it. If there is an error retrieving
+or parsing the last fetch time, it logs the error and returns a default
+fetch time from the config.
+
+Returns:
+	- time.Time: The last fetch time.
+	- error: An error if there was an issue retrieving or parsing the last fetch time.
+*/
 
 func GetLastFetch() (time.Time, error) {
 	last_fetch, err := GetConfig("last_fetch")

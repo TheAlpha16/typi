@@ -18,6 +18,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+/*
+main is the entry point of the application. It initializes the logger, keyrings, and YouTube client.
+It then attempts to connect to the database, retrying every minute if the connection fails.
+Once connected, it retrieves the last fetch time from the database and sets it in the configuration.
+A new cron scheduler is created to fetch new videos at intervals specified by the configuration.
+The application listens for interrupt signals to gracefully shut down the cron scheduler and the fetcher.
+*/
+
 func main() {
 	logs.InitLogger()
 	keyrings.InitKeys()

@@ -10,6 +10,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+/*
+FetchVideosAsync fetches videos asynchronously from YouTube based on the configured topic and
+the last fetch time. It handles quota exceeded errors by switching the API key and retries the
+request. The fetched videos are uploaded to the database, and the last fetch time is updated.
+
+Returns an error if the video fetching or database operations fail.
+*/
+
 func FetchVideosAsync() error {
 	if client == nil {
 		client = GetYTClient()
