@@ -41,7 +41,7 @@ func main() {
 
 	c := cron.New()
 
-	_, err = c.AddFunc(fmt.Sprintf("@every %ds", config.FREQUENCY_IN_SECONDS), func() {
+	_, err = c.AddFunc(fmt.Sprintf("@every %ss", config.FREQUENCY_IN_SECONDS), func() {
 		logrus.Info("fetching new videos...")
 		_ = fetcher.FetchVideosAsync()
 	})
