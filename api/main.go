@@ -6,10 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/TheAlpha16/typi/api/config"
 	"github.com/TheAlpha16/typi/api/database"
-	"github.com/TheAlpha16/typi/api/fetcher"
-	"github.com/TheAlpha16/typi/api/keyrings"
 	"github.com/TheAlpha16/typi/api/logs"
 	"github.com/TheAlpha16/typi/api/router"
 
@@ -20,8 +17,6 @@ import (
 
 func main() {
 	logs.InitLogger()
-	keyrings.InitKeys()
-	_ = fetcher.GetYTClient()
 
 	for {
 		if err := database.Connect(); err != nil {
@@ -32,12 +27,6 @@ func main() {
 		}
 		break
 	}
-
-	last_fetch, err := database.GetLastFetch()
-	if err != nil {
-		log.Fatal(err)
-	}
-	config.LAST_FETCH = last_fetch
 
 	// Setup access logs
 	accessLogFile, err := os.OpenFile("./access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -54,17 +43,6 @@ func main() {
 	app.Use(logger.New(loggerConfig))
 	app.Use(recover.New())
 	router.SetupRoutes(app)
-
-	// call fetch every 5 minutes
-	go func() {
-		for {
-			log.Println("fetching new videos...")
-			if err := fetcher.FetchVideosAsync(); err != nil {
-				log.Println(err)
-			}
-			time.Sleep(5 * time.Minute)
-		}
-	}()
 
 	log.Fatal(app.Listen(":4601"))
 }
