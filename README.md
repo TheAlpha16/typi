@@ -14,11 +14,11 @@ Typi fetches youtube videos with predefined keyword (cricket) and displays them 
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Components](#components)\
-    - [typi-database](#typi-database)\
-    - [typi-api](#typi-api)\
-    - [typi-cron](#typi-cron)\
-    - [typi-ui](#typi-ui)\
+- [Components](#components)
+    - [typi-database](#typi-database)
+    - [typi-api](#typi-api)
+    - [typi-cron](#typi-cron)
+    - [typi-ui](#typi-ui)
     - [typi-proxy](#typi-proxy)
 
 ## Prerequisites
