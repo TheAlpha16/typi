@@ -1,0 +1,66 @@
+services:
+  typi-api:
+    build:
+      context: ./api
+    container_name: typi-api
+    environment:
+      - POSTGRES_HOST=typi-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=d9c3452013d1106e3be8ac25d2068cdc
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_PORT=5432
+    depends_on:
+      typi-db:
+        condition: service_healthy
+    restart: always
+
+  typi-db:
+    build:
+      context: ./database
+    container_name: typi-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=d9c3452013d1106e3be8ac25d2068cdc
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+    restart: always
+
+  typi-cron:
+    build:
+      context: ./cron
+    container_name: typi-cron
+    environment:
+      - POSTGRES_HOST=typi-db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=d9c3452013d1106e3be8ac25d2068cdc
+      - POSTGRES_DATABASE=postgres
+      - POSTGRES_PORT=5432
+      - YT_API_KEYS=AIzaSyDOcTfdT1Z6QWrp8qqDjRl_c1sTabpfaiw,AIzaSyA79nnWhz3RnoPQaxvfcs8sb4xPN8nqOu4
+      - FREQUENCY_IN_SECONDS=60
+    depends_on:
+      typi-db:
+        condition: service_healthy
+    restart: always
+
+  typi-ui:
+    build:
+      context: ./ui
+    container_name: typi-ui
+
+  typi-proxy:
+    build:
+      context: ./proxy
+    container_name: typi-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - typi-api
+      - typi-ui
+    environment:
+      - API_URL=typi-api:4601
+      - UI_URL=typi-ui:4602
+      - PROXY_SERVER_NAME=localhost typi.infosec.org.in
