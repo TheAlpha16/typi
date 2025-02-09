@@ -19,7 +19,8 @@ func FetchVideosAsync() error {
 		Q(config.TOPIC).
 		PublishedAfter(config.LAST_FETCH.Format(time.RFC3339)).
 		Order("date").
-		Type("video")
+		Type("video").
+		MaxResults(50)
 
 	response, err := call.Do()
 	if err != nil {
