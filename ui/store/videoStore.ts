@@ -47,7 +47,7 @@ export const useVideoStore = create<VideoState>()(
                         };
                     });
                 } catch (error) {
-                    console.error("Failed to fetch videos:", error);
+                    console.log("Failed to fetch videos:", error);
                     set({ isLoading: false });
                 }
             },
