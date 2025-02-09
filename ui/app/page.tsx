@@ -69,7 +69,7 @@ export default function Home() {
           >
             <Input
               type="text"
-              placeholder="filter videos with keywords..."
+              placeholder="filter cricket videos with keywords. eg: rohit sharma"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-grow truncate"
