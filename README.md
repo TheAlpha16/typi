@@ -2,6 +2,14 @@
 
 Typi fetches youtube videos with predefined keyword (cricket) and displays them in the dashboard.
 
+> [!note]
+> I have hosted the sample application at [typi.infosec.org.in](https://typi.infosec.org.in/). Please check it out.
+>
+> sample config:
+> - API Keys - 3
+> - frequency - 5 minutes (minimum time to allow quotas to reset for one day with 3 keys)
+> - topic - cricket
+
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
