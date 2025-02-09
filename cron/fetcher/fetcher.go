@@ -1,20 +1,20 @@
 package fetcher
 
 import (
-	"log"
 	"strings"
 	"time"
 
 	"github.com/TheAlpha16/typi/cron/config"
 	"github.com/TheAlpha16/typi/cron/database"
 	"github.com/TheAlpha16/typi/cron/models"
+	"github.com/sirupsen/logrus"
 )
 
 func FetchVideosAsync() error {
 	if client == nil {
 		client = GetYTClient()
 	}
-	
+
 	call := client.Search.List([]string{"snippet"}).
 		Q(config.TOPIC).
 		PublishedAfter(config.LAST_FETCH.Format(time.RFC3339)).
@@ -24,12 +24,12 @@ func FetchVideosAsync() error {
 	response, err := call.Do()
 	if err != nil {
 		if strings.Contains(err.Error(), "quotaExceeded") {
-			log.Println("Quota exceeded, switching API key...")
+			logrus.Warn("Quota exceeded, switching API key...")
 			client = nil
 			client = GetYTClient()
 			return FetchVideosAsync()
 		}
-		log.Println(err)
+		logrus.WithError(err).Error("failed to fetch videos")
 		return err
 	}
 
@@ -55,7 +55,7 @@ func FetchVideosAsync() error {
 
 	lastPublishedAt, err := time.Parse(time.RFC3339, response.Items[0].Snippet.PublishedAt)
 	if err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("failed to parse last published at")
 		return err
 	}
 

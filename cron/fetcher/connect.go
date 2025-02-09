@@ -2,10 +2,10 @@ package fetcher
 
 import (
 	"context"
-	"log"
 
 	"github.com/TheAlpha16/typi/cron/keyrings"
 
+	"github.com/sirupsen/logrus"
 	"google.golang.org/api/option"
 	"google.golang.org/api/youtube/v3"
 )
@@ -20,7 +20,7 @@ func InitYTClient() *youtube.Service {
 
 	service, err := youtube.NewService(ctx, option.WithAPIKey(apiKey))
 	if err != nil {
-		log.Println(err)
+		logrus.WithError(err).Error("unable to create youtube service")
 		return nil
 	}
 

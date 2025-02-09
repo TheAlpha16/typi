@@ -1,11 +1,12 @@
 package keyrings
 
 import (
-	"log"
 	"strings"
 	"sync"
 
 	"github.com/TheAlpha16/typi/cron/config"
+
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -17,7 +18,7 @@ var (
 func InitKeys() {
 	keysString := config.YT_API_KEYS
 	if keysString == "" {
-		log.Fatal("No API keys found")
+		logrus.Fatal("No API keys found")
 	}
 
 	apiKeys = strings.Split(keysString, ",")
