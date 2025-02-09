@@ -22,6 +22,7 @@ func GetVideos(offset, limit int) ([]models.Video, error) {
 
 	if err := DB.
 		Model(&models.Video{}).
+		Order("published_at desc").
 		Offset(offset).
 		Limit(limit).
 		Find(&videos).Error; err != nil {
