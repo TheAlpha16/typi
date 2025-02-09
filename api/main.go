@@ -19,6 +19,7 @@ import (
 func main() {
 	logs.InitLogger()
 
+	logrus.Info("connecting to database...")
 	for {
 		if err := database.Connect(); err != nil {
 			logrus.WithError(err).Error("failed to connect to database")
@@ -28,6 +29,7 @@ func main() {
 		}
 		break
 	}
+	logrus.Info("connected to database")
 
 	// Setup access logs
 	accessLogFile, err := os.OpenFile("./access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)

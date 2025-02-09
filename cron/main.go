@@ -22,7 +22,8 @@ func main() {
 	logs.InitLogger()
 	keyrings.InitKeys()
 	_ = fetcher.GetYTClient()
-
+	
+	logrus.Info("connecting to database...")
 	for {
 		if err := database.Connect(); err != nil {
 			logrus.WithError(err).Error("failed to connect to database")
@@ -32,6 +33,7 @@ func main() {
 		}
 		break
 	}
+	logrus.Info("connected to database")
 
 	last_fetch, err := database.GetLastFetch()
 	if err != nil {
